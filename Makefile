@@ -16,8 +16,9 @@ KUBE_BURNER_VERSION= github.com/cloud-bulldozer/go-commons/version
 ENGINE = docker
 REGISTRY = docker.io
 ORG = loginfordocker
-CONTAINER_NAME = $(REGISTRY)/$(ORG)/kube-burner:$(VERSION)
-CONTAINER_NAME_ARCH = $(REGISTRY)/$(ORG)/kube-burner:$(VERSION)-$(ARCH)
+DOCKER_IO_NAMESPACE = loginfordocker
+CONTAINER_NAME = $(REGISTRY)/$(DOCKER_IO_NAMESPACE)/kube-burner:$(VERSION)
+CONTAINER_NAME_ARCH = $(REGISTRY)/$(DOCKER_IO_NAMESPACE)/kube-burner:$(VERSION)-$(ARCH)
 MANIFEST_ARCHS ?= amd64 arm64 ppc64le s390x
 
 all: lint build images push
@@ -58,6 +59,7 @@ images:
 	$(ENGINE) buildx build --platform=linux/$(ARCH) -f Containerfile -t $(CONTAINER_NAME_ARCH) --load $(BIN_DIR)/$(ARCH)/
 
 push:
+	@echo "ORG=$ORG, DOCKER_IO_NAMESPACE=$DOCKER_IO_NAMESPACE, CONTAINER_NAME_ARCH=$CONTAINER_NAME_ARCH"
 	@echo -e "\033[2mPushing container $(CONTAINER_NAME_ARCH)\033[0m"
 	$(ENGINE) push $(CONTAINER_NAME_ARCH)
 
