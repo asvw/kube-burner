@@ -13,9 +13,9 @@ BUILD_DATE = $(shell date '+%Y-%m-%d-%H:%M:%S')
 KUBE_BURNER_VERSION= github.com/cloud-bulldozer/go-commons/version
 
 # Containers
-ENGINE = docker
+ENGINE ?= podman
 REGISTRY = docker.io
-ORG = loginfordocker
+ORG ?= loginfordocker
 DOCKER_IO_NAMESPACE = loginfordocker
 CONTAINER_NAME = $(REGISTRY)/$(DOCKER_IO_NAMESPACE)/kube-burner:$(VERSION)
 CONTAINER_NAME_ARCH = $(REGISTRY)/$(DOCKER_IO_NAMESPACE)/kube-burner:$(VERSION)-$(ARCH)
@@ -56,7 +56,7 @@ install:
 
 images:
 	@echo -e "\n\033[2mBuilding container $(CONTAINER_NAME_ARCH)\033[0m"
-	$(ENGINE) buildx build --platform=linux/$(ARCH) -f Containerfile -t $(CONTAINER_NAME_ARCH) --load $(BIN_DIR)/$(ARCH)/
+	docker buildx build --platform=linux/$(ARCH) -f Containerfile -t $(CONTAINER_NAME_ARCH) --load $(BIN_DIR)/$(ARCH)/
 
 push:
 	@echo "ORG=$(ORG), DOCKER_IO_NAMESPACE=$(DOCKER_IO_NAMESPACE), CONTAINER_NAME_ARCH=$(CONTAINER_NAME_ARCH)"
