@@ -15,7 +15,7 @@ KUBE_BURNER_VERSION= github.com/cloud-bulldozer/go-commons/version
 # Containers
 ENGINE ?= docker
 REGISTRY = docker.io
-ORG ?= yourusername  # Replace 'yourusername' with your Docker Hub username
+ORG ?= loginfordocker  # Replace with your Docker Hub username
 CONTAINER_NAME = $(REGISTRY)/$(ORG)/kube-burner:$(VERSION)
 CONTAINER_NAME_ARCH = $(REGISTRY)/$(ORG)/kube-burner:$(VERSION)-$(ARCH)
 MANIFEST_ARCHS ?= amd64 arm64 ppc64le s390x
