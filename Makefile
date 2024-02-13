@@ -55,7 +55,7 @@ install:
 
 images:
 	@echo -e "\n\033[2mBuilding container $(CONTAINER_NAME_ARCH)\033[0m"
-	$(ENGINE) build --arch=$(ARCH) -f Containerfile $(BIN_DIR)/$(ARCH)/ -t $(CONTAINER_NAME_ARCH)
+	docker buildx build --platform=linux/$(ARCH) -f Containerfile $(BIN_DIR)/$(ARCH)/ -t $(CONTAINER_NAME_ARCH) --load
 
 push:
 	@echo -e "\033[2mPushing container $(CONTAINER_NAME_ARCH)\033[0m"
