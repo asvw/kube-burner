@@ -76,7 +76,7 @@ manifest-build:
 test: test-k8s
 
 test-k8s:
-  cd test && bats -F pretty -T --print-output-on-failure test-k8s.bats
+	cd test && bats -F pretty -T --print-output-on-failure test-k8s.bats
 
 test-ocp:
-  cd test && bats -F pretty -T --print-output-on-failure test-ocp.bats
+	cd test && bats -F pretty -T --print-output-on-failure test-ocp.bats
