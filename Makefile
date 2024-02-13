@@ -1,4 +1,4 @@
-.PHONY: build lint clean test help images push manifest manifest-build all release
+.PHONY: build lint clean test help images push manifest manifest-build all release tag
 
 ARCH ?= amd64
 BIN_NAME = kube-burner
@@ -78,6 +78,14 @@ manifest-build:
 		$(ENGINE) manifest add $(CONTAINER_NAME) $(CONTAINER_NAME)-$${arch}; \
 	done
 
+tag:
+ifndef VERSION
+	$(error VERSION is undefined. Usage: make tag VERSION=v1.1.1)
+endif
+	@git tag -a $(VERSION) -m "Release $(VERSION)"
+	@git push origin $(VERSION)
+	@echo "Tagged $(VERSION) and pushed to remote repository."
+
 release: $(BIN_PATH)
 	# Determine the latest git tag
 	$(eval VERSION := $(shell git describe --tags `git rev-list --tags --max-count=1`))
@@ -96,7 +104,7 @@ release: $(BIN_PATH)
 		gh release create $(VERSION) \
 		--repo $(GITHUB_REPOSITORY) \
 		--title "Release $(VERSION)" \
-		--notes "" \
+		--notes "Private release" \
 		$(BIN_PATH) \
 		--target $(GIT_COMMIT) \
 		--draft; \
