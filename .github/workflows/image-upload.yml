@@ -30,44 +30,44 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
-      # - name: Login to Docker Hub
-      #   run: podman login docker.io -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}"
-      #   env:
-      #     DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-      #     DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Login to Docker Hub
+        run: podman login docker.io -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}"
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build kube-burner binary
         run: make build
         env:
           ARCH: ${{ matrix.arch }}
 
-      # - name: Build container image
-      #   run: make images
-      #   env:
-      #     ARCH: ${{ matrix.arch }}
+      - name: Build container image
+        run: make images
+        env:
+          ARCH: ${{ matrix.arch }}
 
-      # - name: Push container image
-      #   run: make push
-      #   env:
-      #     ARCH: ${{ matrix.arch }}
+      - name: Push container image
+        run: make push
+        env:
+          ARCH: ${{ matrix.arch }}
 
-#   manifest:
-#     name: Build container manifest
-#     runs-on: ubuntu-latest
-#     needs: containers
-#     steps:
+  manifest:
+    name: Build container manifest
+    runs-on: ubuntu-latest
+    needs: containers
+    steps:
 
-#       - name: Check out code
-#         uses: actions/checkout@v4
-#         with:
-#           fetch-depth: 1
-#           persist-credentials: false
+      - name: Check out code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+          persist-credentials: false
 
-#       - name: Login to Docker Hub
-#         run: podman login docker.io -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}"
-#         env:
-#           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-#           DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      - name: Login to Docker Hub
+        run: podman login docker.io -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}"
+        env:
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
-#       - name: Create and push manifest
-#         run: make manifest
+      - name: Create and push manifest
+        run: make manifest

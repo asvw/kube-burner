@@ -1,4 +1,4 @@
-.PHONY: build lint clean test help images push manifest manifest-build all
+.PHONY: build lint clean test help images push manifest manifest-build all release
 
 ARCH ?= amd64
 BIN_NAME = kube-burner
@@ -11,6 +11,9 @@ VERSION ?= $(shell hack/tag_name.sh)
 SOURCES := $(shell find . -type f -name "*.go")
 BUILD_DATE = $(shell date '+%Y-%m-%d-%H:%M:%S')
 KUBE_BURNER_VERSION= github.com/cloud-bulldozer/go-commons/version
+
+# Github release
+GITHUB_REPOSITORY ?= asvw/kube-burner
 
 # Containers
 ENGINE ?= podman
@@ -74,6 +77,22 @@ manifest-build:
 	for arch in $(MANIFEST_ARCHS); do \
 		$(ENGINE) manifest add $(CONTAINER_NAME) $(CONTAINER_NAME)-$${arch}; \
 	done
+
+release: $(BIN_PATH)
+	# Check if the GitHub CLI is installed
+	@if ! command -v gh > /dev/null; then \
+		echo "GitHub CLI (gh) is not installed. Please install it to create releases."; \
+		exit 1; \
+	fi
+	# Create a GitHub release (this assumes `VERSION` is the tag name you want to use for the release)
+	@gh release create $(VERSION) \
+		--repo $(GITHUB_REPOSITORY) \
+		--title "Release $(VERSION)" \
+		--notes "Release notes or changelog here" \
+		$(BIN_PATH) \
+		--target $(GIT_COMMIT) \
+		--draft
+	@echo "Release $(VERSION) created and $(BIN_NAME) uploaded."
 
 #test: test-k8s test-ocp
 test: test-k8s

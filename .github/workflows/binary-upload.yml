@@ -71,3 +71,13 @@ jobs:
           asset_path: ./path/to/your-binary
           asset_name: kube-burner-${{ env.RELEASE_TAG }}-${{ env.ARCH }}.bin
           asset_content_type: application/octet-stream
+
+      - name: Upload Binary to GitHub Release
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.check_release.outputs.exists == 'true' && steps.check_release.outputs.upload_url || steps.create_release.outputs.upload_url }}
+          asset_path: ./bin/${{ matrix.arch }}/${{ env.BIN_NAME }}
+          asset_name: ${{ env.BIN_NAME }}-${{ matrix.arch }}
+          asset_content_type: application/octet-stream

@@ -15,8 +15,8 @@ jobs:
   #   uses: ./.github/workflows/gorelease.yml
   #   needs: ci-tests
 
-  binary-upload:
-    uses: ./.github/workflows/binary-upload.yml
+  binary-release:
+    uses: ./.github/workflows/binary-release.yml
 #    needs: ci-tests
     secrets: inherit
 
