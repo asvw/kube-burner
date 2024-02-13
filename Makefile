@@ -79,24 +79,38 @@ manifest-build:
 	done
 
 release: $(BIN_PATH)
+	# Determine the latest git tag
+	$(eval VERSION := $(shell git describe --tags `git rev-list --tags --max-count=1`))
 	# Check if the GitHub CLI is installed
 	@if ! command -v gh > /dev/null; then \
 		echo "GitHub CLI (gh) is not installed. Please install it to create releases."; \
 		exit 1; \
 	fi
-	# Create a GitHub release (this assumes `VERSION` is the tag name you want to use for the release)
-	@if ! gh release view $(VERSION) > /dev/null 2>&1; then \
-			gh release create $(VERSION) \
-			--repo $(GITHUB_REPOSITORY) \
-			--title "Release $(VERSION)" \
-			--notes "Release notes or changelog here" \
-			$(BIN_PATH) \
-			--target $(GIT_COMMIT) \
-			--draft; \
-			echo "Release $(VERSION) created and $(BIN_NAME) uploaded."; \
-	else \
-			echo "Release $(VERSION) already exists. Skipping creation."; \
+	# Ensure VERSION is not empty
+	@if [ -z "$(VERSION)" ]; then \
+		echo "VERSION is not set. Please ensure you have at least one tag."; \
+		exit 1; \
 	fi
+	# Create a GitHub release for the latest tag
+	@if ! gh release view $(VERSION) > /dev/null 2>&1; then \
+		gh release create $(VERSION) \
+		--repo $(GITHUB_REPOSITORY) \
+		--title "Release $(VERSION)" \
+		--notes "" \
+		$(BIN_PATH) \
+		--target $(GIT_COMMIT) \
+		--draft; \
+		echo "Release $(VERSION) created and $(BIN_NAME) uploaded."; \
+	else \
+		echo "Release $(VERSION) already exists. Skipping creation."; \
+	fi
+	# Upload or replace asset
+	# Delete existing asset with the same name if it exists
+	-@gh release delete-asset --repo $(GITHUB_REPOSITORY) --name $(BIN_NAME) $(VERSION) || true
+	# Upload the new asset
+	@gh release upload $(VERSION) $(BIN_PATH) --repo $(GITHUB_REPOSITORY) --clobber
+	@echo "$(BIN_NAME) uploaded to Release $(VERSION)."
+
 
 #test: test-k8s test-ocp
 test: test-k8s
