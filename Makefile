@@ -1,6 +1,4 @@
-
 .PHONY: build lint clean test help images push manifest manifest-build all
-
 
 ARCH ?= amd64
 BIN_NAME = kube-burner
@@ -15,9 +13,9 @@ BUILD_DATE = $(shell date '+%Y-%m-%d-%H:%M:%S')
 KUBE_BURNER_VERSION= github.com/cloud-bulldozer/go-commons/version
 
 # Containers
-ENGINE ?= podman
-REGISTRY = quay.io
-ORG ?= kube-burner
+ENGINE ?= docker
+REGISTRY = docker.io
+ORG ?= yourusername  # Replace 'yourusername' with your Docker Hub username
 CONTAINER_NAME = $(REGISTRY)/$(ORG)/kube-burner:$(VERSION)
 CONTAINER_NAME_ARCH = $(REGISTRY)/$(ORG)/kube-burner:$(VERSION)-$(ARCH)
 MANIFEST_ARCHS ?= amd64 arm64 ppc64le s390x

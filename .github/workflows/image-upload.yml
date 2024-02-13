@@ -1,11 +1,11 @@
 # image-upload.yml
-name: Upload containers to Quay
+name: Upload containers to Docker Hub
 on:
   workflow_call:
     secrets:
-      QUAY_USER:
+      DOCKER_USERNAME:
         required: true
-      QUAY_TOKEN:
+      DOCKER_PASSWORD:
         required: true
 jobs:
   containers:
@@ -21,7 +21,7 @@ jobs:
 
     steps:
       - name: Install dependencies required for multi-arch builds
-        run: sudo apt-get update && sudo apt-get install qemu-user-static podman fuse-overlayfs
+        run: sudo apt-get update && sudo apt-get install qemu-user-static docker.io fuse-overlayfs
 
       - name: Set up Go 1.19
         uses: actions/setup-go@v5
@@ -34,11 +34,11 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
-      - name: Login in quay
-        run: podman login quay.io -u="${QUAY_USER}" -p="${QUAY_TOKEN}"
+      - name: Login to Docker Hub
+        run: echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
         env:
-          QUAY_USER: ${{ secrets.QUAY_USER }}
-          QUAY_TOKEN: ${{ secrets.QUAY_TOKEN }}
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build kube-burner binary
         run: make build
@@ -69,11 +69,11 @@ jobs:
           fetch-depth: 1
           persist-credentials: false
 
-      - name: Login in quay
-        run: podman login quay.io -u="${QUAY_USER}" -p="${QUAY_TOKEN}"
+      - name: Login to Docker Hub
+        run: echo "${DOCKER_PASSWORD}" | docker login -u "${DOCKER_USERNAME}" --password-stdin
         env:
-          QUAY_USER: ${{ secrets.QUAY_USER }}
-          QUAY_TOKEN: ${{ secrets.QUAY_TOKEN }}
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Create and push manifest
         run: make manifest
