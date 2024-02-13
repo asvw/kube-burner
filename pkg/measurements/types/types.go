@@ -112,7 +112,7 @@ var SvcLatencyCheckerPod = &corev1.Pod{
 		TerminationGracePeriodSeconds: ptr.To[int64](0),
 		Containers: []corev1.Container{
 			{
-				Image:           "harbor-development.charon-123.appcloud.swisscom.com/library/cloud-bulldozer/fedora-nc:latest",
+				Image:           "harbor-development.charon-123.appcloud.swisscom.com/library/scaling-tests/fedora-nc:latest",
 				Command:         []string{"sleep", "inf"},
 				Name:            SvcLatencyCheckerName,
 				ImagePullPolicy: corev1.PullAlways,
