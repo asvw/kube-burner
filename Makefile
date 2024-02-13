@@ -19,7 +19,8 @@ ORG ?= loginfordocker
 DOCKER_IO_NAMESPACE = loginfordocker
 CONTAINER_NAME = $(REGISTRY)/$(DOCKER_IO_NAMESPACE)/kube-burner:$(VERSION)
 CONTAINER_NAME_ARCH = $(REGISTRY)/$(DOCKER_IO_NAMESPACE)/kube-burner:$(VERSION)-$(ARCH)
-MANIFEST_ARCHS ?= amd64 arm64 ppc64le s390x
+#MANIFEST_ARCHS ?= amd64 arm64 ppc64le s390x
+MANIFEST_ARCHS ?= amd64
 
 all: lint build images push
 
