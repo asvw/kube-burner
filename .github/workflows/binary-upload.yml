@@ -1,0 +1,71 @@
+name: Build Binary and Upload Release Artifact
+on:
+  workflow_call:
+    secrets:
+      DOCKER_USERNAME:
+        required: true
+      DOCKER_PASSWORD:
+        required: true
+
+jobs:
+  build-and-upload:
+    name: Build and Upload
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Go 1.19
+        uses: actions/setup-go@v5
+        with:
+          go-version: 1.19
+
+      - name: Build kube-burner binary
+        run: make build
+        env:
+          ARCH: amd64
+
+      - name: Determine release tag
+        id: get_tag
+        run: echo "RELEASE_TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+
+      - name: Check if release already exists
+        id: check_release
+        uses: actions/github-script@v5
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const { data: releases } = await github.rest.repos.listReleases({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+            });
+            const release = releases.find(release => release.tag_name === process.env.RELEASE_TAG);
+            if (release) {
+              core.setOutput('exists', 'true');
+              core.setOutput('upload_url', release.upload_url);
+            } else {
+              core.setOutput('exists', 'false');
+            }
+
+      - name: Create Release if it does not exist
+        if: steps.check_release.outputs.exists == 'false'
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ env.RELEASE_TAG }}
+          release_name: Release ${{ env.RELEASE_TAG }}
+          draft: false
+          prerelease: false
+
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.check_release.outputs.exists == 'true' && steps.check_release.outputs.upload_url || steps.create_release.outputs.upload_url }}
+          asset_path: ./path/to/your-binary
+          asset_name: kube-burner-${{ env.RELEASE_TAG }}-${{ env.ARCH }}.bin
+          asset_content_type: application/octet-stream
