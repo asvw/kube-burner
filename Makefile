@@ -15,7 +15,7 @@ KUBE_BURNER_VERSION= github.com/cloud-bulldozer/go-commons/version
 # Containers
 ENGINE ?= docker
 REGISTRY = docker.io
-ORG ?= loginfordocker  # Replace with your Docker Hub username
+ORG ?= loginfordocker
 CONTAINER_NAME = $(REGISTRY)/$(ORG)/kube-burner:$(VERSION)
 CONTAINER_NAME_ARCH = $(REGISTRY)/$(ORG)/kube-burner:$(VERSION)-$(ARCH)
 MANIFEST_ARCHS ?= amd64 arm64 ppc64le s390x
@@ -55,7 +55,6 @@ install:
 
 images:
 	@echo -e "\n\033[2mBuilding container $(CONTAINER_NAME_ARCH)\033[0m"
-	docker buildx build --help
 	$(ENGINE) buildx build --platform=linux/$(ARCH) -f Containerfile -t $(CONTAINER_NAME_ARCH) --load $(BIN_DIR)/$(ARCH)/
 
 push:
