@@ -85,14 +85,18 @@ release: $(BIN_PATH)
 		exit 1; \
 	fi
 	# Create a GitHub release (this assumes `VERSION` is the tag name you want to use for the release)
-	@gh release create $(VERSION) \
-		--repo $(GITHUB_REPOSITORY) \
-		--title "Release $(VERSION)" \
-		--notes "Release notes or changelog here" \
-		$(BIN_PATH) \
-		--target $(GIT_COMMIT) \
-		--draft
-	@echo "Release $(VERSION) created and $(BIN_NAME) uploaded."
+	@if ! gh release view $(VERSION) > /dev/null 2>&1; then \
+			gh release create $(VERSION) \
+			--repo $(GITHUB_REPOSITORY) \
+			--title "Release $(VERSION)" \
+			--notes "Release notes or changelog here" \
+			$(BIN_PATH) \
+			--target $(GIT_COMMIT) \
+			--draft; \
+			echo "Release $(VERSION) created and $(BIN_NAME) uploaded."; \
+	else \
+			echo "Release $(VERSION) already exists. Skipping creation."; \
+	fi
 
 #test: test-k8s test-ocp
 test: test-k8s
