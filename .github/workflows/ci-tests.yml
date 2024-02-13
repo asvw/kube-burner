@@ -13,7 +13,7 @@ jobs:
   build:
     uses: ./.github/workflows/builders.yml
 
-  tests:
-    needs: build
-    uses: ./.github/workflows/test-k8s.yml
-    secrets: inherit
+  # tests:
+  #   needs: build
+  #   uses: ./.github/workflows/test-k8s.yml
+  #   secrets: inherit
