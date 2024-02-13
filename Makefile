@@ -83,12 +83,12 @@ release: $(BIN_PATH)
 	$(eval VERSION := $(shell git describe --tags `git rev-list --tags --max-count=1`))
 	# Check if the GitHub CLI is installed
 	@if ! command -v gh > /dev/null; then \
-		echo "GitHub CLI (gh) is not installed. Please install it to create releases."; \
+		@echo "GitHub CLI (gh) is not installed. Please install it to create releases."; \
 		exit 1; \
 	fi
 	# Ensure VERSION is not empty
 	@if [ -z "$(VERSION)" ]; then \
-		echo "VERSION is not set. Please ensure you have at least one tag."; \
+		@echo "VERSION is not set. Please ensure you have at least one tag."; \
 		exit 1; \
 	fi
 	# Create a GitHub release for the latest tag
@@ -106,9 +106,9 @@ release: $(BIN_PATH)
 	fi
 	# Upload or replace asset
 	# Delete existing asset with the same name if it exists
-	-@gh release delete-asset --repo $(GITHUB_REPOSITORY) --name $(BIN_NAME) $(VERSION) || true
+	-gh release delete-asset --repo $(GITHUB_REPOSITORY) --name $(BIN_NAME) $(VERSION) || true
 	# Upload the new asset
-	@gh release upload $(VERSION) $(BIN_PATH) --repo $(GITHUB_REPOSITORY) --clobber
+	gh release upload $(VERSION) $(BIN_PATH) --repo $(GITHUB_REPOSITORY) --clobber
 	@echo "$(BIN_NAME) uploaded to Release $(VERSION)."
 
 
