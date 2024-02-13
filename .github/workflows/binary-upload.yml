@@ -26,9 +26,11 @@ jobs:
         env:
           ARCH: amd64
 
-      - name: Determine release tag
-        id: get_tag
-        run: echo "RELEASE_TAG=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
+      - name: Fetch all history for all tags and branches
+        run: git fetch --prune --unshallow
+
+      - name: Get latest tag
+        run: echo "RELEASE_TAG=$(git describe --tags $(git rev-list --tags --max-count=1))" >> $GITHUB_ENV
 
       - name: Check if release already exists
         id: check_release
