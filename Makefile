@@ -13,9 +13,9 @@ BUILD_DATE = $(shell date '+%Y-%m-%d-%H:%M:%S')
 KUBE_BURNER_VERSION= github.com/cloud-bulldozer/go-commons/version
 
 # Containers
-ENGINE ?= docker
+ENGINE = docker
 REGISTRY = docker.io
-ORG ?= loginfordocker
+ORG = loginfordocker
 CONTAINER_NAME = $(REGISTRY)/$(ORG)/kube-burner:$(VERSION)
 CONTAINER_NAME_ARCH = $(REGISTRY)/$(ORG)/kube-burner:$(VERSION)-$(ARCH)
 MANIFEST_ARCHS ?= amd64 arm64 ppc64le s390x
