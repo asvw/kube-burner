@@ -13,10 +13,7 @@ jobs:
     strategy:
       matrix:
         arch:
-#        - arm64
         - amd64
-#        - ppc64le
-#        - s390x
 
     steps:
       - name: Install dependencies required for multi-arch builds
