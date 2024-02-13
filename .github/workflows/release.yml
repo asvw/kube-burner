@@ -14,10 +14,15 @@ jobs:
   #   uses: ./.github/workflows/gorelease.yml
   #   needs: ci-tests
 
-  image-upload:
-    uses: ./.github/workflows/image-upload.yml
+  binary-upload:
+    uses: ./.github/workflows/binary-upload.yml
     needs: ci-tests
     secrets: inherit
+
+  # image-upload:
+  #   uses: ./.github/workflows/image-upload.yml
+  #   needs: ci-tests
+  #   secrets: inherit
 
   # deploy-docs:
   #   uses: ./.github/workflows/docs.yml

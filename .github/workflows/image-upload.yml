@@ -30,11 +30,11 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
 
-      - name: Login to Docker Hub
-        run: podman login docker.io -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}"
-        env:
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
-          DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      # - name: Login to Docker Hub
+      #   run: podman login docker.io -u="${DOCKER_USERNAME}" -p="${DOCKER_PASSWORD}"
+      #   env:
+      #     DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      #     DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
 
       - name: Build kube-burner binary
         run: make build
